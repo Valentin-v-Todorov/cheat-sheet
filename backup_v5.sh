@@ -3,6 +3,34 @@
 # Default values:
 destination_path=/home/valentin/backups/
 
+
+export NEWT_COLORS='
+    root=white,black
+    border=black,lightgray
+    window=lightgray,lightgray
+    shadow=black,gray
+    title=black,lightgray
+    button=black,cyan
+    actbutton=white,cyan
+    compactbutton=black,lightgray
+    checkbox=black,lightgray
+    actcheckbox=lightgray,cyan
+    entry=black,lightgray
+    disentry=gray,lightgray
+    label=black,lightgray
+    listbox=black,lightgray
+    actlistbox=black,cyan
+    sellistbox=lightgray,black
+    actsellistbox=lightgray,black
+    textbox=black,lightgray
+    acttextbox=black,cyan
+    emptyscale=,gray
+    fullscale=,cyan
+    helpline=white,black
+    roottext=lightgrey,black
+'
+
+
 start_whiptail(){
 
     # Color codes:
@@ -31,22 +59,21 @@ start_whiptail(){
                 case "$choice" in
                     1)
                         create_backup() {
-                            backup_name=$(whiptail --inputbox "Enter the name for the backup:" 8 50 2>&1 >/dev/tty)
+                            backup_name=$(whiptail --inputbox "Enter the name for the backup:" 0 0 2>&1 >/dev/tty)
 
                             if [ -z "$backup_name" ]; then
-                                whiptail --msgbox "Backup canceled. No backup name provided." 8 50
+                                whiptail --msgbox "Backup canceled. No backup name provided." 0 0
                                 return
                             fi
 
                             backup_name="$(date +%Y-%m-%d)-${backup_name}"
 
-                            # This is here so I can track the exit code.
                             (tar -cz -C "${source}" . 2>&1 | pv -petrbc) > "${destination}/${backup_name}.tar.gz" 2>&1
 
                             if [ $? -eq 0 ]; then
-                                whiptail --msgbox "Backup completed successfully. The backup is saved to: $destination/$backup_name.tar.gz" 8 60
+                                whiptail --msgbox "Backup completed successfully. The backup is saved to: $destination/$backup_name.tar.gz" 0 0
                             else
-                                whiptail --msgbox "Backup failed. There was an issue with creating the archive." 8 50
+                                whiptail --msgbox "Backup failed. There was an issue with creating the archive." 0 0
                             fi
                         }
 
@@ -57,7 +84,7 @@ start_whiptail(){
                             for folder in "${folders[@]}"; do
                                 if [ ! -d "${destination_path}${folder}" ]; then
                                     mkdir -p "${destination_path}${folder}"
-                                    whiptail --msgbox "Folder '${folder}' created inside: ${destination_path}" 8 50
+                                    whiptail --msgbox "Folder '${folder}' created inside: ${destination_path}" 0 0
                                 fi
                             done
 
@@ -83,27 +110,27 @@ start_whiptail(){
                                         break
                                         ;;
                                     4)
-                                        folder_name=$(whiptail --inputbox "Enter the name of the new folder:" 8 50 2>&1 >/dev/tty)
+                                        folder_name=$(whiptail --inputbox "Enter the name of the new folder:" 0 0 2>&1 >/dev/tty)
                                         if [ -z "$folder_name" ]; then
-                                            whiptail --msgbox "Backup canceled. No folder name provided." 8 50
+                                            whiptail --msgbox "Backup canceled. No folder name provided." 0 0
                                         else
                                             destination="${destination_path}${folder_name}"
                                             mkdir -p "$destination"
-                                            whiptail --msgbox "Folder '$folder_name' created inside: $destination_path" 8 50
+                                            whiptail --msgbox "Folder '$folder_name' created inside: $destination_path" 0 0
                                             break
                                         fi
                                         ;;
                                     5)
-                                        whiptail --msgbox "Exiting..." 8 50
+                                        whiptail --msgbox "Exiting..." 0 0
                                         exit 0
                                         ;;
                                     *)
-                                        whiptail --msgbox "Invalid choice. Please try again." 8 50
+                                        whiptail --msgbox "Invalid choice. Please try again." 0 0
                                         ;;
                                 esac
                             done
 
-                            whiptail --msgbox "You selected: $destination" 8 50
+                            whiptail --msgbox "You selected: $destination" 0 0
                         }
 
                         enter_source() {
@@ -118,12 +145,12 @@ start_whiptail(){
                                 fi
 
                                 if [ -d "$source" ]; then
-                                    whiptail --msgbox "The directory exists. Continuing..." 8 50
+                                    whiptail --msgbox "The directory exists. Continuing..." 0 0
                                     select_destination
                                     create_backup
                                     break
                                 else
-                                    whiptail --msgbox "The specified source directory does not exist. Please try again." 8 50
+                                    whiptail --msgbox "The specified source directory does not exist. Please try again." 0 0
                                 fi
                             done
                         }
@@ -155,12 +182,12 @@ start_whiptail(){
                         (tar -xzvf "$tar_file" -C "$decompression_dir" 2>&1 | pv -petrbc) > /dev/null 2>&1
 
                         if [ $? -eq 0 ]; then
-                            whiptail --msgbox "Decompression completed successfully. Files are extracted to: $decompression_dir" 8 60
+                            whiptail --msgbox "Decompression completed successfully. Files are extracted to: $decompression_dir" 0 0
                         else
-                            whiptail --msgbox "Decompression failed. There was an issue with extracting the archive." 8 50
+                            whiptail --msgbox "Decompression failed. There was an issue with extracting the archive." 0 0
                         fi
                     else
-                        whiptail --msgbox "The specified tar file does not exist. Please try again." 8 50
+                        whiptail --msgbox "The specified tar file does not exist. Please try again." 0 0
                     fi
                 }
 
@@ -188,27 +215,27 @@ start_whiptail(){
                                 break
                                 ;;
                             4)
-                                custom_directory=$(whiptail --inputbox "Enter the custom directory path:" 8 50 2>&1 >/dev/tty)
+                                custom_directory=$(whiptail --inputbox "Enter the custom directory path:" 0 0 2>&1 >/dev/tty)
                                 if [ -z "$custom_directory" ]; then
-                                    whiptail --msgbox "Backup canceled. No directory provided." 8 50
+                                    whiptail --msgbox "Backup canceled. No directory provided." 0 0
                                 else
                                     decompression_destination="$custom_directory"
                                     mkdir -p "$decompression_destination"
-                                    whiptail --msgbox "Folder '$decompression_destination' created." 8 50
+                                    whiptail --msgbox "Folder '$decompression_destination' created." 0 0
                                     break
                                 fi
                                 ;;
                             5)
-                                whiptail --msgbox "Exiting..." 8 50
+                                whiptail --msgbox "Exiting..." 0 0
                                 exit 0
                                 ;;
                             *)
-                                whiptail --msgbox "Invalid choice. Please try again." 8 50
+                                whiptail --msgbox "Invalid choice. Please try again." 0 0
                                 ;;
                         esac
                     done
 
-                    whiptail --msgbox "You selected: $decompression_destination" 8 50
+                    whiptail --msgbox "You selected: $decompression_destination" 0 0
 
                 }
 
@@ -220,18 +247,23 @@ start_whiptail(){
 
                     for folder in "${folders[@]}"; do
                         folder_name=$(basename "$folder")
-                        folder_options+=("$folder_name" "   <   ")
+                        num_files=$(find "$folder" -maxdepth 1 -type f | wc -l)
+                        if [ "$num_files" -eq 0 ]; then
+                            folder_options+=("$folder_name" "No files inside")
+                        else
+                            folder_options+=("$folder_name" "$num_files files inside")
+                        fi
                     done
 
                     if [ ${#folder_options[@]} -eq 0 ]; then
-                        whiptail --msgbox "No folders found inside: $destination_path" 8 30
+                        whiptail --msgbox "No folders found inside: $destination_path" 0 0
                         return
                     fi
 
                     selected_folder=$(whiptail --title "Select Destination Folder" --menu "Select a folder:" 0 0 0 "${folder_options[@]}" 3>&1 1>&2 2>&3)
 
                     if [ -z "$selected_folder" ]; then
-                        whiptail --msgbox "No folder selected. Exiting..." 8 50
+                        whiptail --msgbox "No folder selected. Exiting..." 0 0
                         return
                     fi
 
@@ -243,14 +275,14 @@ start_whiptail(){
                     done
 
                     if [ ${#tar_files[@]} -eq 0 ]; then
-                        whiptail --msgbox "No tar files found inside: $folder_path" 8 50
+                        whiptail --msgbox "No tar files found inside: $folder_path" 0 0
                         return
                     fi
 
                     selected_tar_file=$(whiptail --title "Select Tar File" --menu "Select a tar file:" 0 0 0 "${tar_files[@]}" 3>&1 1>&2 2>&3)
 
                     if [ -z "$selected_tar_file" ]; then
-                        whiptail --msgbox "No tar file selected. Exiting..." 8 50
+                        whiptail --msgbox "No tar file selected. Exiting..." 0 0
                         return
                     fi
 
