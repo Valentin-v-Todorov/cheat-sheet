@@ -3,7 +3,7 @@
 # Default values:
 destination_path=/home/valentin/backups/
 
-
+# Whiptail colors
 export NEWT_COLORS='
     root=white,black
     border=black,lightgray
